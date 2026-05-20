@@ -30,19 +30,6 @@ jobs:
           args: --manifest-path pyprover9/Cargo.toml --release --out pyprover9/dist --find-interpreter
           manylinux: auto
           sccache: "true"
-          before-script-linux: |
-            set -eux
-            if command -v dnf >/dev/null 2>&1; then
-              dnf install -y clang llvm-devel
-            elif command -v yum >/dev/null 2>&1; then
-              yum install -y clang llvm-devel
-            elif command -v apt-get >/dev/null 2>&1; then
-              apt-get update
-              apt-get install -y clang libclang-dev
-            else
-              echo "No supported package manager found to install clang/libclang" >&2
-              exit 1
-            fi
       - name: Test installed wheel
         working-directory: pyprover9
         run: |
@@ -59,8 +46,6 @@ jobs:
 
   windows:
     runs-on: windows-latest
-    env:
-      LIBCLANG_PATH: C:\Program Files\LLVM\bin
     steps:
       - uses: actions/checkout@v4
         with:
@@ -69,8 +54,6 @@ jobs:
         with:
           python-version: "3.x"
           architecture: x64
-      - name: Install LLVM
-        run: choco install llvm --no-progress -y
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -99,10 +82,8 @@ jobs:
         include:
           - runner: macos-12
             target: x86_64
-            libclang_path: /usr/local/opt/llvm/lib
           - runner: macos-14
             target: aarch64
-            libclang_path: /opt/homebrew/opt/llvm/lib
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,11 +91,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Install LLVM
-        run: brew install llvm
       - name: Build wheels
-        env:
-          LIBCLANG_PATH: ${{ matrix.libclang_path }}
         uses: PyO3/maturin-action@v1
         with:
           command: build

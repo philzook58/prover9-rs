@@ -7,5 +7,4 @@ links = "prover9"
 [dependencies]
 
 [build-dependencies]
-bindgen = "0.72"
 cc = "1"
