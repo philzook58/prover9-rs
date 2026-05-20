@@ -18,15 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
       - name: Build manylinux wheels
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: pyprover9
           command: build
-          args: --release --out dist --find-interpreter
+          args: --manifest-path pyprover9/Cargo.toml --release --out pyprover9/dist --find-interpreter
           manylinux: auto
           sccache: "true"
           before-script-linux: |
@@ -56,45 +57,14 @@ jobs:
           name: wheels-linux
           path: pyprover9/dist
 
-  musllinux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - name: Build musllinux wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          working-directory: pyprover9
-          command: build
-          args: --release --out dist --find-interpreter
-          manylinux: musllinux_1_2
-          sccache: "true"
-          before-script-linux: |
-            set -eux
-            if command -v apk >/dev/null 2>&1; then
-              apk add clang llvm-dev
-            elif command -v dnf >/dev/null 2>&1; then
-              dnf install -y clang llvm-devel
-            elif command -v yum >/dev/null 2>&1; then
-              yum install -y clang llvm-devel
-            else
-              echo "No supported package manager found to install clang/libclang" >&2
-              exit 1
-            fi
-      - name: Upload musllinux wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-musllinux
-          path: pyprover9/dist
-
   windows:
     runs-on: windows-latest
     env:
       LIBCLANG_PATH: C:\Program Files\LLVM\bin
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
@@ -104,9 +74,8 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: pyprover9
           command: build
-          args: --release --out dist --find-interpreter
+          args: --manifest-path pyprover9/Cargo.toml --release --out pyprover9/dist --find-interpreter
           sccache: "true"
       - name: Test installed wheel
         shell: bash
@@ -136,6 +105,8 @@ jobs:
             libclang_path: /opt/homebrew/opt/llvm/lib
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
@@ -146,10 +117,9 @@ jobs:
           LIBCLANG_PATH: ${{ matrix.libclang_path }}
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: pyprover9
           command: build
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --manifest-path pyprover9/Cargo.toml --release --out pyprover9/dist --find-interpreter
           sccache: "true"
       - name: Test installed wheel
         working-directory: pyprover9
@@ -169,12 +139,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
-          working-directory: pyprover9
           command: sdist
-          args: --out dist
+          args: --manifest-path pyprover9/Cargo.toml --out pyprover9/dist
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
