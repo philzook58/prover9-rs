@@ -11,3 +11,9 @@
 /.agents/
 /.codex/
 /z3.rs
+
+# Python local state
+**/__pycache__/
+**/.pytest_cache/
+**/.venv/
+pyprover9/python/prover9/*.so

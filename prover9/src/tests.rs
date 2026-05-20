@@ -692,13 +692,13 @@ fn rewrite_sets_normalize_terms_with_indexed_rules() {
         rewrites
             .insert_rule(&Clause::from_term(Term::parse("=(f(a),a)").unwrap()))
             .unwrap(),
-        RewriteRuleKind::LexDependentLeftToRight
+        RewriteRuleKind::Oriented
     );
     assert_eq!(
         rewrites
             .insert_rule(&Clause::from_term(Term::parse("=(g(a),f(a))").unwrap()))
             .unwrap(),
-        RewriteRuleKind::LexDependentLeftToRight
+        RewriteRuleKind::Oriented
     );
 
     let original = Term::parse("g(a)").unwrap();

@@ -260,9 +260,23 @@ int prover9_rewrite_rule_type(Topform clause) {
   return demodulator_type(clause, -1, 1);
 }
 
+int prover9_rewrite_prepare_rule(Topform clause, int allow_flips) {
+  if (clause == NULL) {
+    return NOT_DEMODULATOR;
+  }
+  orient_equalities(clause, allow_flips != 0);
+  return demodulator_type(clause, -1, 1);
+}
+
 void prover9_rewrite_index_insert(Topform rule, int rule_type, Mindex idx) {
   if (rule != NULL && idx != NULL && rule_type != NOT_DEMODULATOR) {
     idx_demodulator(rule, rule_type, INSERT, idx);
+  }
+}
+
+void prover9_rewrite_index_remove(Topform rule, int rule_type, Mindex idx) {
+  if (rule != NULL && idx != NULL && rule_type != NOT_DEMODULATOR) {
+    idx_demodulator(rule, rule_type, DELETE, idx);
   }
 }
 

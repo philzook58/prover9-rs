@@ -24,6 +24,7 @@ pub enum RewriteRuleKind {
 pub struct RewriteSet {
     raw: sys::Mindex,
     rules: Vec<Clause>,
+    rule_kinds: Vec<RewriteRuleKind>,
 }
 
 impl RewriteSet {
@@ -31,6 +32,7 @@ impl RewriteSet {
         with_ladr(|| Self {
             raw: unsafe { sys::prover9_rewrite_index_new() },
             rules: Vec::new(),
+            rule_kinds: Vec::new(),
         })
     }
 
@@ -49,16 +51,16 @@ impl RewriteSet {
     pub fn insert_rule(&mut self, rule: &Clause) -> Result<RewriteRuleKind, Error> {
         let owned = rule.clone();
         let rendered = owned.to_string();
-        with_ladr(|| {
-            let raw_kind = unsafe { sys::prover9_rewrite_rule_type(owned.raw) };
-            let kind = RewriteRuleKind::from_raw(raw_kind)
-                .ok_or_else(|| Error::InvalidRewriteRule(rendered.clone()))?;
-            unsafe {
-                sys::prover9_rewrite_index_insert(owned.raw, raw_kind, self.raw);
-            }
-            self.rules.push(owned);
-            Ok(kind)
-        })
+        let raw_kind = with_ladr(|| unsafe { sys::prover9_rewrite_prepare_rule(owned.raw, 1) });
+        let kind =
+            RewriteRuleKind::from_raw(raw_kind).ok_or_else(|| Error::InvalidRewriteRule(rendered))?;
+
+        with_ladr(|| unsafe {
+            sys::prover9_rewrite_index_insert(owned.raw, raw_kind, self.raw);
+        });
+        self.rules.push(owned);
+        self.rule_kinds.push(kind);
+        Ok(kind)
     }
 
     pub fn rewrite_term(&self, term: &Term) -> Term {
@@ -85,6 +87,15 @@ impl RewriteRuleKind {
             _ => None,
         }
     }
+
+    fn into_raw(self) -> i32 {
+        match self {
+            Self::Oriented => ORIENTED,
+            Self::LexDependentLeftToRight => LEX_DEP_LR,
+            Self::LexDependentRightToLeft => LEX_DEP_RL,
+            Self::LexDependentBoth => LEX_DEP_BOTH,
+        }
+    }
 }
 
 impl Default for RewriteSet {
@@ -105,6 +116,9 @@ impl Drop for RewriteSet {
     fn drop(&mut self) {
         if !self.raw.is_null() {
             with_ladr(|| unsafe {
+                for (rule, kind) in self.rules.iter().zip(self.rule_kinds.iter().copied()) {
+                    sys::prover9_rewrite_index_remove(rule.raw, kind.into_raw(), self.raw);
+                }
                 sys::prover9_rewrite_index_destroy(self.raw);
             });
             self.raw = ptr::null_mut();

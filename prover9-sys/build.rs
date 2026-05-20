@@ -42,6 +42,7 @@ fn main() {
         .allowlist_function("copy_literals")
         .allowlist_function("demod1")
         .allowlist_function("demodulator_type")
+        .allowlist_function("orient_equalities")
         .allowlist_function("append_literal")
         .allowlist_function("fdemod_clause")
         .allowlist_function("idx_demodulator")

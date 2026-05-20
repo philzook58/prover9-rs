@@ -40,6 +40,8 @@ Topform prover9_factor2(Topform clause, int lit1_num, int lit2_num,
 Mindex prover9_rewrite_index_new(void);
 void prover9_rewrite_index_destroy(Mindex idx);
 int prover9_rewrite_rule_type(Topform clause);
+int prover9_rewrite_prepare_rule(Topform clause, int allow_flips);
 void prover9_rewrite_index_insert(Topform rule, int rule_type, Mindex idx);
+void prover9_rewrite_index_remove(Topform rule, int rule_type, Mindex idx);
 Term prover9_rewrite_term(Term term, Mindex idx, int lex_order_vars);
 Topform prover9_rewrite_clause(Topform clause, Mindex idx, int lex_order_vars);
