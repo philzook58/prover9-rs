@@ -22,7 +22,7 @@ macro_rules! py_enum_display {
     };
 }
 
-#[pyclass(name = "OrderMethod", module = "prover9", eq, eq_int)]
+#[pyclass(name = "OrderMethod", module = "prover9", eq, eq_int, from_py_object)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum PyOrderMethod {
     Lrpo,
@@ -42,7 +42,7 @@ impl From<PyOrderMethod> for prover9::OrderMethod {
     }
 }
 
-#[pyclass(name = "TermOrdering", module = "prover9", eq, eq_int)]
+#[pyclass(name = "TermOrdering", module = "prover9", eq, eq_int, from_py_object)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum PyTermOrdering {
     NotComparable,
@@ -70,7 +70,7 @@ impl From<prover9::TermOrdering> for PyTermOrdering {
     }
 }
 
-#[pyclass(name = "DemodDirection", module = "prover9", eq, eq_int)]
+#[pyclass(name = "DemodDirection", module = "prover9", eq, eq_int, from_py_object)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum PyDemodDirection {
     LeftToRight,
@@ -86,7 +86,7 @@ impl From<PyDemodDirection> for prover9::DemodDirection {
     }
 }
 
-#[pyclass(name = "EqualitySide", module = "prover9", eq, eq_int)]
+#[pyclass(name = "EqualitySide", module = "prover9", eq, eq_int, from_py_object)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum PyEqualitySide {
     Left,
@@ -102,7 +102,7 @@ impl From<PyEqualitySide> for prover9::EqualitySide {
     }
 }
 
-#[pyclass(name = "RewriteRuleKind", module = "prover9", eq, eq_int)]
+#[pyclass(name = "RewriteRuleKind", module = "prover9", eq, eq_int, from_py_object)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum PyRewriteRuleKind {
     Oriented,

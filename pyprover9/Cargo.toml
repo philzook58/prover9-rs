@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 prover9 = { path = "../prover9" }
-pyo3 = { version = "0.22", features = ["extension-module"] }
+pyo3 = { version = "0.28.3", features = ["extension-module"] }
