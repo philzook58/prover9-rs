@@ -8,5 +8,5 @@ name = "_prover9"
 crate-type = ["cdylib"]
 
 [dependencies]
-prover9 = { path = "../prover9" }
+prover9 = { path = "../prover9-rs" }
 pyo3 = { version = "0.28.3", features = ["extension-module"] }

@@ -1,3 +1,3 @@
 [workspace]
-members = ["prover9", "prover9-sys", "pyprover9"]
+members = ["prover9-rs", "prover9-sys", "pyprover9"]
 resolver = "2"
