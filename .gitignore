@@ -1,0 +1,13 @@
+/target/
+
+# Editor and OS noise
+/.DS_Store
+/.idea/
+/.vscode/
+/*.swp
+/*~
+
+# Local tool state
+/.agents/
+/.codex/
+/z3.rs

@@ -1,0 +1,3 @@
+[submodule "Prover9"]
+	path = Prover9
+	url = https://github.com/AlgorithmicTruth/Prover9.git
